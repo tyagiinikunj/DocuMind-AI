@@ -220,11 +220,12 @@ if uploaded_files:
         if st.button("❓ Generate Quiz"):
             question = "Generate 5 quiz questions from the uploaded PDFs."
 
+    
     question = (
     locals().get("question")
     or st.chat_input("Ask anything about the PDF")
-)
-
+    )
+    
     if question:
 
         st.session_state.messages.append(
