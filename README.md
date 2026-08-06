@@ -1,4 +1,5 @@
 # 📄 DocuMind AI
+![DocuMind AI](assets/screenshots/home.png)
 
 An AI-powered Multi-PDF Question Answering application built using **LangChain**, **FAISS**, **Hugging Face Embeddings**, **Groq LLM**, and **Streamlit**.
 
@@ -137,6 +138,22 @@ streamlit run app.py
 ---
 
 ## 📷 Screenshots
+
+### 📚 Multi PDF Upload
+
+![Upload](assets/screenshots/upload.png)
+
+---
+
+### 💬 AI Question Answering
+
+![Chat](assets/screenshots/chat.png)
+
+---
+
+### ⚡ Quick Actions
+
+![Quick Actions](assets/screenshots/actions.png)
 
 ### 🏠 Home Page
 
