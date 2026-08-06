@@ -136,10 +136,15 @@ streamlit run app.py
 ```
 
 ---
-
 ## 📷 Screenshots
 
-### 📚 Multi PDF Upload
+### 🏠 Home Page
+
+![Home Page](assets/screenshots/home.png)
+
+---
+
+### 📚 Multiple PDF Upload
 
 ![Upload](assets/screenshots/upload.png)
 
@@ -151,31 +156,11 @@ streamlit run app.py
 
 ---
 
-### ⚡ Quick Actions
+### ❓ Quiz Generation & Quick Actions
 
-![Quick Actions](assets/screenshots/actions.png)
+![Actions](assets/screenshots/actions.png)
 
-### 🏠 Home Page
 
-> *(Add screenshot here)*
-
----
-
-### 📚 Multiple PDF Upload
-
-> *(Add screenshot here)*
-
----
-
-### 💬 AI Question Answering
-
-> *(Add screenshot here)*
-
----
-
-### ❓ Quiz Generation
-
-> *(Add screenshot here)*
 
 ---
 
