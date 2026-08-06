@@ -31,16 +31,24 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 if uploaded_file:
+    if "rag_ready" not in st.session_state:
 
-    docs = load_pdf(uploaded_file)
+        docs = load_pdf(uploaded_file)
 
-    chunks = split_documents(docs)
+        chunks = split_documents(docs)
 
-    vector_store = create_vector_store(chunks)
+        vector_store = create_vector_store(chunks)
 
-    retriever = get_retriever(vector_store)
+        retriever = get_retriever(vector_store)
 
-    llm = load_llm()
+        llm = load_llm()
+
+        st.session_state.retriever = retriever
+        st.session_state.llm = llm
+        st.session_state.rag_ready = True
+
+    retriever = st.session_state.retriever
+    llm = st.session_state.llm
 
     prompt = ChatPromptTemplate.from_template(
         """
