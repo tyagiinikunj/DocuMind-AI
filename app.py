@@ -77,29 +77,46 @@ st.subheader("Chat with your PDF using AI")
 
 
 
-uploaded_file = st.file_uploader(
-    "Upload your PDF",
-    type=["pdf"]
+uploaded_files = st.file_uploader(
+    "Upload one or more PDFs",
+    type=["pdf"],
+    accept_multiple_files=True
 )
 
-current_file = uploaded_file.name if uploaded_file else None
+current_files = (
+    sorted([file.name for file in uploaded_files])
+    if uploaded_files
+    else []
+)
 
 for message in st.session_state.get("messages",[]):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 
-if uploaded_file:
+if uploaded_files:
     if(
     
-     "rag_ready" not in st.session_state or st.session_state.get("current_file")!= current_file
+     "rag_ready" not in st.session_state or st.session_state.get("current_files")!= current_files 
     ):
         
         
+        pdf_info = []
+        all_docs = []
 
-        docs = load_pdf(uploaded_file)
+        for uploaded_file in uploaded_files:
+            docs = load_pdf(uploaded_file)
+            pdf_info.append(
+                {
+                    "name": uploaded_file.name,
+                    "size": round(uploaded_file.size / 1024, 2),
+                    "pages": len(docs)
+                }
+            )
+            all_docs.extend(docs)
 
-        chunks = split_documents(docs)
+        chunks = split_documents(all_docs)
+        st.session_state.total_chunks = len(chunks)
 
         vector_store = create_vector_store(chunks)
 
@@ -109,9 +126,10 @@ if uploaded_file:
 
         st.session_state.retriever = retriever
         st.session_state.llm = llm
+        st.session_state.pdf_info = pdf_info
         st.session_state.rag_ready = True
 
-        st.session_state.current_file = current_file
+        st.session_state.current_files = current_files 
         st.session_state.messages = []
 
     retriever = st.session_state.retriever
@@ -163,8 +181,49 @@ if uploaded_file:
     )
 
     st.success("✅ PDF Ready!")
+    st.markdown("### 📚 Loaded PDFs")
 
-    question = st.chat_input("Ask anything about the PDF")
+    for pdf in st.session_state.pdf_info:
+
+        st.info(
+            f"""
+    📄**{pdf['name']}**
+
+    Pages: {pdf['pages']}
+
+    Size: {pdf['size']} KB
+    """
+        )
+
+    st.caption(
+        f"Total PDFs: {len(st.session_state.pdf_info)} | "
+        f"Total Pages: {sum(pdf['pages'] for pdf in st.session_state.pdf_info)} | "
+        f"Total Chunks: {st.session_state.total_chunks}"
+    )
+    st.markdown("### 💡 Quick Actions")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button("📄 Summarize PDFs"):
+            question = "Summarize all uploaded PDFs."
+
+        if st.button("📚 Important Definitions"):
+            question = "List all important definitions from the uploaded PDFs."
+
+    with col2:
+
+        if st.button("📝 Key Topics"):
+            question = "List the key topics covered in the uploaded PDFs."
+
+        if st.button("❓ Generate Quiz"):
+            question = "Generate 5 quiz questions from the uploaded PDFs."
+
+    question = (
+    locals().get("question")
+    or st.chat_input("Ask anything about the PDF")
+)
 
     if question:
 
