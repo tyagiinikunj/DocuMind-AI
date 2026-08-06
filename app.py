@@ -19,11 +19,16 @@ st.set_page_config(
 
 st.title("📄 DocuMind AI")
 st.subheader("Chat with your PDF using AI")
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 uploaded_file = st.file_uploader(
     "Upload your PDF",
     type=["pdf"]
 )
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
 if uploaded_file:
 
@@ -67,11 +72,19 @@ Question:
 
     st.success("✅ PDF Ready!")
 
-    question = st.text_input(
-        "Ask anything about the PDF"
-    )
+    question = st.chat_input("Ask anything about the PDF")
 
     if question:
+
+        st.session_state.messages.append(
+            {
+                "role": "user",
+                "content": question
+            }
+        )
+
+        with st.chat_message("user"):
+            st.markdown(question)
 
         response = rag_chain.invoke(
             {
@@ -79,6 +92,29 @@ Question:
             }
         )
 
-        st.markdown("## Answer")
+        answer = response["answer"]
+        source_documents = response["context"]
 
-        st.write(response["answer"])
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": answer
+            }
+        )
+
+        with st.chat_message("assistant"):
+
+         st.markdown(answer)
+
+        st.markdown("---")
+        st.markdown("### 📄 Sources")
+
+        pages = set()
+
+        for doc in source_documents:
+
+            if "page" in doc.metadata:
+                pages.add(doc.metadata["page"] + 1)
+
+        if pages:
+            st.write(", ".join(f"Page {page}" for page in sorted(pages)))
