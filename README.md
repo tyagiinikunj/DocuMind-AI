@@ -181,7 +181,7 @@ streamlit run app.py
 **Nikunj Tyagi**
 
 - GitHub: https://github.com/tyagiinikunj
-- LinkedIn: *(Add your LinkedIn profile URL here)*
+- LinkedIn: https://www.linkedin.com/in/nikunj-tyagi-150bb0308/
 
 ---
 
